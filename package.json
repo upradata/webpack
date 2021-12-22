@@ -1,0 +1,76 @@
+{
+	"name": "@upradata/webpack",
+	"author": {
+		"name": "Upra-Data",
+		"email": "code@upradata.com",
+		"url": "https://github.com/upradata"
+	},
+	"keywords": [
+		"upradata",
+		"typescript",
+		"ts",
+		"webpack",
+		"compile",
+		"programmatically"
+	],
+	"maintainers": [
+		{
+			"name": "Thomas Milotti",
+			"email": "thomas.milotti@gmail.com",
+			"url": "https://github.com/milottit"
+		}
+	],
+	"repository": {
+		"url": "https://github.com/upradata/webpack"
+	},
+	"homepage": "",
+	"bin": "",
+	"license": "MIT",
+	"version": "1.0.0",
+	"description": "",
+	"sideEffects": false,
+	"main": "lib",
+	"types": "lib-esm",
+	"module": "lib-esm",
+	"files": [
+		"lib",
+		"lib-esm"
+	],
+	"scripts": {
+		"clean": "shx rm -rf lib lib-esm",
+		"pre:build": "npm run clean",
+		"build": "concurrently 'tsc -p tsconfig.lib.json' 'tsc -p tsconfig.lib-esm.json'",
+		"post:build": "npm run test && npm run e2e",
+		"watch": "pnpm run build:watch",
+		"build:watch": "concurrently 'tsc -p tsconfig.lib.json -w' 'tsc -p tsconfig.lib-esm.json -w'",
+		"test": "npx jest --verbose false --config jest-ut.config.js",
+		"e2e": "npx jest --passWithNoTests --verbose false --config jest-e2e.config.js",
+		"version": "npm version",
+		"github-push": "npm version patch && git pushall && git pushall-tags",
+		"npm-publish": "npm run build && npm publish --access public"
+	},
+	"dependencies": {
+		"@babel/core": "^7.16.5",
+		"memfs": "^3.4.0",
+		"terser-webpack-plugin": "^5.3.0",
+		"ts-loader": "^9.2.6",
+		"tsconfig-paths-webpack-plugin": "^3.5.2",
+		"webpack": "^5.65.0"
+	},
+	"devDependencies": {
+		"@types/jest": "^27.0.3",
+		"concurrently": "^6.5.1",
+		"jest": "^27.4.5",
+		"ts-jest": "^27.1.2",
+		"typescript": "^4.5.4"
+	},
+	"local": {
+		"dependencies": {
+			"@upradata/util": "link:/home/milottit/Libraries/Upra-Data/util@13.0.1",
+			"@upradata/node-util": "link:/home/milottit/Libraries/Upra-Data/node-util@14.0.2"
+		},
+		"usedBy": {
+			"@upradata/puppeteer": "/home/milottit/Libraries/Upra-Data/puppeteer"
+		}
+	}
+}
