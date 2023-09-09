@@ -1,7 +1,7 @@
 
-import webpack from 'webpack';
 import path from 'path';
-import { Function0, objectToString } from '@upradata/util';
+import webpack from 'webpack';
+import { objectToString } from '@upradata/util';
 import { red, yellow } from '@upradata/node-util';
 import { WebpackConfigOptions, webpackConfig } from './config';
 
@@ -47,7 +47,7 @@ export const compileDone = async (err: Error, stats: webpack.Stats): Promise<Web
 };
 
 
-export type WebpackOutputAsset = { filename: string, outputDir: string, filepath: string; };
+export type WebpackOutputAsset = { filename: string; outputDir: string; filepath: string; };
 
 
 export type WebpackCompileOptions = WebpackConfigOptions & {
@@ -82,7 +82,19 @@ export const webpackCompile = async (options: WebpackCompileOptions): Promise<We
 
     return new Promise<WebpackCompileReturn>(res => {
         const done = (err: Error, stats: webpack.Stats) => compileDone(err, stats).then(files => res({
-            files,
+            files: files.sort((f1, f2) => {
+                if (f1.filename.startsWith('vendor'))
+                    return -1; // f1 is before f2
+
+                if (f2.filename.startsWith('vendor'))
+                    return 1; // f2 is before f1
+
+                if (f1.filename.startsWith('main'))
+                    return 1; // f1 is after f2
+
+                if (f2.filename.endsWith('main'))
+                    return -1;  // f1 is before f2
+            }),
             filesystems: {
                 input: compiler.inputFileSystem,
                 intermediate: compiler.intermediateFileSystem,
